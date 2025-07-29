@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parlor Booking - Beauty Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-purple-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-spa text-2xl text-pink-500 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Parlor Beauty</h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#services" class="text-gray-600 hover:text-pink-500 transition-colors">Services</a>
+                    <a href="#booking" class="text-gray-600 hover:text-pink-500 transition-colors">Book Now</a>
+                    <a href="#appointments" class="text-gray-600 hover:text-pink-500 transition-colors">My Appointments</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-pink-500">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#services" class="block px-3 py-2 text-gray-600 hover:text-pink-500">Services</a>
+                <a href="#booking" class="block px-3 py-2 text-gray-600 hover:text-pink-500">Book Now</a>
+                <a href="#appointments" class="block px-3 py-2 text-gray-600 hover:text-pink-500">My Appointments</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
+                Welcome to <span class="text-pink-500">Parlor Beauty</span>
+            </h2>
+            <p class="text-xl text-gray-600 mb-8">
+                Book your beauty services online with ease. Professional treatments, convenient scheduling, and seamless experience.
+            </p>
+            <button onclick="scrollToSection('services')" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-8 rounded-full transition-colors transform hover:scale-105">
+                Explore Services
+            </button>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Cards -->
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-cut text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">Hair Styling</h3>
+                        <p class="text-gray-600 mt-2">Professional hair cuts, styling, and treatments</p>
+                        <p class="text-pink-500 font-bold text-lg mt-2">$45 - $120</p>
+                        <p class="text-sm text-gray-500">Duration: 30-90 mins</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-palette text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">Makeup</h3>
+                        <p class="text-gray-600 mt-2">Professional makeup for special occasions</p>
+                        <p class="text-pink-500 font-bold text-lg mt-2">$60 - $150</p>
+                        <p class="text-sm text-gray-500">Duration: 45-120 mins</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-spa text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">Facial Treatment</h3>
+                        <p class="text-gray-600 mt-2">Rejuvenating facials and skin treatments</p>
+                        <p class="text-pink-500 font-bold text-lg mt-2">$35 - $80</p>
+                        <p class="text-sm text-gray-500">Duration: 30-60 mins</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-hand-sparkles text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">Manicure & Pedicure</h3>
+                        <p class="text-gray-600 mt-2">Nail care and beautiful nail art</p>
+                        <p class="text-pink-500 font-bold text-lg mt-2">$25 - $60</p>
+                        <p class="text-sm text-gray-500">Duration: 45-90 mins</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-magic text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">Waxing</h3>
+                        <p class="text-gray-600 mt-2">Professional waxing services</p>
+                        <p class="text-pink-500 font-bold text-lg mt-2">$20 - $50</p>
+                        <p class="text-sm text-gray-500">Duration: 15-45 mins</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-gem text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">Bridal Package</h3>
+                        <p class="text-gray-600 mt-2">Complete bridal beauty package</p>
+                        <p class="text-pink-500 font-bold text-lg mt-2">$200 - $350</p>
+                        <p class="text-sm text-gray-500">Duration: 3-4 hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="py-20 px-4 bg-gradient-to-br from-pink-50 to-purple-50">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Book Your Appointment</h2>
+            
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <form id="booking-form" class="space-y-6">
+                    <!-- Service Selection -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Select Service</label>
+                        <select id="service-select" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                            <option value="">Choose a service...</option>
+                            <option value="hair-styling" data-price="45-120" data-duration="30-90">Hair Styling ($45 - $120)</option>
+                            <option value="makeup" data-price="60-150" data-duration="45-120">Makeup ($60 - $150)</option>
+                            <option value="facial" data-price="35-80" data-duration="30-60">Facial Treatment ($35 - $80)</option>
+                            <option value="manicure-pedicure" data-price="25-60" data-duration="45-90">Manicure & Pedicure ($25 - $60)</option>
+                            <option value="waxing" data-price="20-50" data-duration="15-45">Waxing ($20 - $50)</option>
+                            <option value="bridal-package" data-price="200-350" data-duration="180-240">Bridal Package ($200 - $350)</option>
+                        </select>
+                    </div>
+
+                    <!-- Date and Time Selection -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Preferred Date</label>
+                            <input type="date" id="appointment-date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Preferred Time</label>
+                            <select id="appointment-time" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                                <option value="">Select time...</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                            <input type="text" id="customer-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+                            <input type="tel" id="customer-phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                        <input type="email" id="customer-email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Special Requests (Optional)</label>
+                        <textarea id="special-requests" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Any special requests or notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-8 rounded-lg transition-colors transform hover:scale-105">
+                        Book Appointment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointments Section -->
+    <section id="appointments" class="py-20 px-4 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">My Appointments</h2>
+            
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Find Your Appointment</label>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="email" id="search-email" placeholder="Enter your email address" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                        <button onclick="searchAppointments()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+                <div id="appointments-list" class="space-y-4">
+                    <!-- Appointments will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Parlor Beauty</h3>
+                    <p class="text-gray-300">Professional beauty services with convenient online booking.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+                    <p class="text-gray-300 mb-2"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
+                    <p class="text-gray-300 mb-2"><i class="fas fa-envelope mr-2"></i> info@parlorbeauty.com</p>
+                    <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i> 123 Beauty St, City, State</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Business Hours</h4>
+                    <p class="text-gray-300 mb-2">Monday - Friday: 9:00 AM - 7:00 PM</p>
+                    <p class="text-gray-300 mb-2">Saturday: 9:00 AM - 6:00 PM</p>
+                    <p class="text-gray-300">Sunday: 10:00 AM - 4:00 PM</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2024 Parlor Beauty. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md mx-4">
+            <div class="text-center">
+                <i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Booking Successful!</h3>
+                <p class="text-gray-600 mb-6">Your appointment has been booked successfully. You will receive a confirmation email shortly.</p>
+                <button onclick="closeModal()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
