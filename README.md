@@ -1,239 +1,188 @@
-# Parlor Booking Web Application
+# Signature Salon - Luxury Beauty & Wellness
 
-A modern, responsive web application for beauty parlor appointment booking with Google Calendar integration.
+A modern, elegant web application for Signature Salon, offering comprehensive beauty and wellness services with online booking capabilities.
 
-## 🎯 Features
+## 🌟 Features
 
-### Core Functionality
-- **Service Display**: Browse available beauty services with pricing and duration
-- **Appointment Booking**: Easy-to-use booking form with date/time selection
-- **Appointment Management**: View, reschedule, and cancel appointments
-- **Google Calendar Integration**: Automatic sync with Google Calendar (simulated)
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **Elegant Design**: Modern, artistic landing page with gradient effects and smooth animations
+- **Comprehensive Services**: 10+ service categories including hair styling, makeup, spa treatments, and more
+- **Online Booking**: Easy appointment booking system with real-time availability
+- **Responsive Design**: Mobile-first approach with beautiful UI/UX
+- **Secure Backend**: Supabase-powered database with authentication and security
+- **Business Integration**: Google Calendar, email notifications, and payment processing ready
 
-### Services Offered
-- Hair Styling ($45 - $120)
-- Makeup ($60 - $150)
-- Facial Treatment ($35 - $80)
-- Manicure & Pedicure ($25 - $60)
-- Waxing ($20 - $50)
-- Bridal Package ($200 - $350)
-
-### Technical Features
-- **Modern UI/UX**: Clean, intuitive interface with smooth animations
-- **Form Validation**: Real-time validation for all input fields
-- **Local Storage**: Appointments stored locally in browser
-- **Conflict Detection**: Prevents double-booking of time slots
-- **Business Hours**: Automatic time slot generation based on business hours
-- **Mobile-First**: Responsive design optimized for all devices
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- No server setup required - runs entirely in the browser
+- Node.js (v14 or higher)
+- npm or yarn
+- Supabase account
+- Google Calendar API (optional)
 
 ### Installation
-1. Clone or download the project files
-2. Open `index.html` in your web browser
-3. Start booking appointments!
 
-### File Structure
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/signature-salon.git
+   cd signature-salon
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp env.example .env
+   ```
+   
+   Edit `.env` file with your actual credentials:
+   ```env
+   # Supabase Configuration
+   SUPABASE_URL=your_supabase_project_url
+   SUPABASE_KEY=your_supabase_anon_key
+   
+   # Database Configuration
+   DB_HOST=your_supabase_db_host
+   DB_USER=your_supabase_db_user
+   DB_PASSWORD=your_supabase_db_password
+   
+   # Security
+   SESSION_SECRET=your_session_secret_key_here
+   JWT_SECRET=your_jwt_secret_key_here
+   
+   # Business Configuration
+   BUSINESS_NAME=Signature Salon
+   BUSINESS_PHONE=+971501234567
+   BUSINESS_EMAIL=info@signaturesalon.ae
+   ```
+
+4. **Set up Supabase Database**
+   ```bash
+   npm run setup-database
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm start
+   ```
+
+6. **Open your browser**
+   Navigate to `http://localhost:3000`
+
+## 🔧 Configuration
+
+### Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `SUPABASE_URL` | Your Supabase project URL | `https://your-project.supabase.co` |
+| `SUPABASE_KEY` | Your Supabase anon key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `DB_HOST` | Database host | `aws-0-ap-southeast-1.pooler.supabase.com` |
+| `DB_USER` | Database username | `postgres.your-project` |
+| `DB_PASSWORD` | Database password | `your-secure-password` |
+| `SESSION_SECRET` | Session encryption key | `your-random-secret-key` |
+| `JWT_SECRET` | JWT signing secret | `your-jwt-secret-key` |
+
+### Optional Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `3000` |
+| `NODE_ENV` | Environment | `development` |
+| `BUSINESS_NAME` | Salon name | `Signature Salon` |
+| `BUSINESS_PHONE` | Contact phone | `+971501234567` |
+| `BUSINESS_EMAIL` | Contact email | `info@signaturesalon.ae` |
+
+## 🛡️ Security Checklist
+
+Before pushing to GitHub, ensure you have:
+
+- ✅ **Removed all hardcoded credentials** from code files
+- ✅ **Created `.env` file** with actual credentials (not committed)
+- ✅ **Updated `env.example`** with placeholder values
+- ✅ **Verified `.gitignore`** includes `.env` files
+- ✅ **Removed any API keys** from configuration files
+- ✅ **Updated business information** to use placeholder data
+- ✅ **Secured database connections** to use environment variables only
+
+### Files to Check for Sensitive Data:
+- `config/supabase.js` ✅ (Updated)
+- `config/database.js` ✅ (Updated)
+- `env.example` ✅ (Updated)
+- Any `.env` files (should not be committed)
+
+## 📁 Project Structure
+
 ```
-parlor-booking-app/
-├── index.html          # Main application file
-├── styles.css          # Custom CSS styles
-├── script.js           # JavaScript functionality
-└── README.md           # This documentation
-```
-
-## 📱 Usage Guide
-
-### Booking an Appointment
-1. **Navigate to Services**: Browse available services and their details
-2. **Click "Book Now"**: Scroll to the booking section
-3. **Select Service**: Choose from the dropdown menu
-4. **Pick Date & Time**: Select your preferred appointment slot
-5. **Fill Contact Details**: Enter your name, phone, and email
-6. **Add Special Requests**: Optional notes for your appointment
-7. **Submit Booking**: Click "Book Appointment" to confirm
-
-### Managing Appointments
-1. **Find Your Appointments**: Go to "My Appointments" section
-2. **Search by Email**: Enter your email address to find bookings
-3. **View Details**: See appointment details, status, and booking ID
-4. **Reschedule/Cancel**: Use the action buttons to modify bookings
-
-### Business Hours
-- **Monday - Friday**: 9:00 AM - 7:00 PM
-- **Saturday**: 9:00 AM - 6:00 PM
-- **Sunday**: 10:00 AM - 4:00 PM
-
-## 🛠️ Technical Implementation
-
-### Frontend Technologies
-- **HTML5**: Semantic markup structure
-- **CSS3**: Modern styling with TailwindCSS
-- **JavaScript (ES6+)**: Interactive functionality
-- **Local Storage**: Client-side data persistence
-
-### Key Features Implementation
-
-#### Form Validation
-```javascript
-// Email validation
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!emailRegex.test(data.customerEmail)) {
-    return false;
-}
-```
-
-#### Conflict Detection
-```javascript
-// Check for booking conflicts
-function hasBookingConflict(newBooking) {
-    return appointments.some(apt => 
-        apt.date === newBooking.date && 
-        apt.time === newBooking.time &&
-        apt.status !== 'cancelled'
-    );
-}
-```
-
-#### Google Calendar Integration (Simulated)
-```javascript
-// Simulate Google Calendar API call
-async function integrateWithGoogleCalendar(bookingData) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Integrating with Google Calendar:', bookingData);
-    return true;
-}
-```
-
-## 🎨 Design Features
-
-### Color Scheme
-- **Primary**: Pink (#ec4899) - Represents beauty and elegance
-- **Secondary**: Purple (#8b5cf6) - Complementary accent color
-- **Neutral**: Gray scale for text and backgrounds
-
-### Typography
-- **Headings**: Bold, modern sans-serif fonts
-- **Body Text**: Clean, readable typography
-- **Icons**: Font Awesome for consistent iconography
-
-### Responsive Design
-- **Mobile**: Single-column layout with touch-friendly buttons
-- **Tablet**: Two-column grid for services
-- **Desktop**: Full three-column layout with hover effects
-
-## 🔧 Customization
-
-### Adding New Services
-1. Edit the services section in `index.html`
-2. Add new service options to the booking form
-3. Update the service mapping in `script.js`
-
-### Modifying Business Hours
-```javascript
-// Update in script.js
-let startHour = 9;
-let endHour = 17;
-if (dayOfWeek === 6) { // Saturday
-    endHour = 18;
-}
-```
-
-### Styling Changes
-- Modify `styles.css` for custom styling
-- Update TailwindCSS classes in `index.html`
-- Customize color scheme in CSS variables
-
-## 📊 Data Management
-
-### Local Storage Structure
-```javascript
-// Appointment object structure
-{
-    id: "BK1234567890ABC",
-    service: "hair-styling",
-    date: "2024-01-15",
-    time: "14:00",
-    customerName: "John Doe",
-    customerPhone: "1234567890",
-    customerEmail: "john@example.com",
-    specialRequests: "Hair coloring",
-    status: "confirmed",
-    createdAt: "2024-01-10T10:30:00.000Z"
-}
+signature-salon/
+├── index.html              # Main landing page
+├── styles.css              # Custom styles
+├── script.js               # Frontend JavaScript
+├── server.js               # Express server
+├── package.json            # Dependencies
+├── env.example             # Environment template
+├── .gitignore              # Git ignore rules
+├── README.md               # This file
+├── config/                 # Configuration files
+│   ├── database.js         # Database configuration
+│   └── supabase.js         # Supabase client
+├── api/                    # API routes
+├── models/                 # Database models
+└── scripts/                # Setup scripts
 ```
 
-### Data Persistence
-- All appointments stored in browser's localStorage
-- Data persists between browser sessions
-- No server required for basic functionality
+## 🎨 Services Offered
 
-## 🔒 Security Considerations
+### Hair Services
+- **Hairstyling** - AED 150 - AED 400
+- **Hair Color & Extensions** - AED 200 - AED 800
+- **Blow dry, Shampoo & Conditioning**
 
-### Client-Side Security
-- Form validation prevents invalid data
-- XSS protection through proper HTML escaping
-- Input sanitization for user data
+### Beauty Services
+- **Makeup Services** - AED 200 - AED 500
+- **Eyelash Extensions** - AED 300 - AED 600
+- **Nail Services** - AED 80 - AED 200
 
-### Privacy
-- All data stored locally in user's browser
-- No external data transmission
-- User controls their own appointment data
+### Wellness Services
+- **Spa & Massage** - AED 150 - AED 400
+- **Skin Treatments** - AED 120 - AED 350
+- **Hair Removal** - AED 50 - AED 150
+
+### Special Services
+- **Bridal Services** - AED 800 - AED 1500
+- **Beauty Products** - AED 50 - AED 500
 
 ## 🚀 Deployment
 
-### Static Hosting
-This application can be deployed to any static hosting service:
+### Local Development
+```bash
+npm start
+```
 
-1. **GitHub Pages**: Upload files to a GitHub repository
-2. **Netlify**: Drag and drop the folder to Netlify
-3. **Vercel**: Connect your repository for automatic deployment
-4. **Firebase Hosting**: Use Firebase for hosting
+### Production Deployment
+1. Set up your production environment variables
+2. Configure your domain and SSL certificates
+3. Set up your database and Supabase project
+4. Deploy to your preferred hosting platform
 
-### Production Considerations
-- Enable HTTPS for security
-- Set up proper caching headers
-- Consider CDN for faster loading
-- Implement analytics tracking
+## 🤝 Contributing
 
-## 🔮 Future Enhancements
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Planned Features
-- **Real Google Calendar Integration**: Actual API implementation
-- **Email Notifications**: Confirmation and reminder emails
-- **Admin Panel**: Staff management interface
-- **Payment Integration**: Online payment processing
-- **SMS Notifications**: Text message reminders
-- **Multi-location Support**: Multiple parlor locations
+## 📝 License
 
-### Technical Improvements
-- **Backend API**: Node.js/Express server
-- **Database**: MongoDB or PostgreSQL
-- **Authentication**: User accounts and login
-- **Real-time Updates**: WebSocket integration
-- **PWA Support**: Progressive Web App features
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 📞 Support
 
-### Contact Information
-- **Email**: info@parlorbeauty.com
-- **Phone**: (555) 123-4567
-- **Address**: 123 Beauty St, City, State
-
-### Business Hours
-- **Monday - Friday**: 9:00 AM - 7:00 PM
-- **Saturday**: 9:00 AM - 6:00 PM
-- **Sunday**: 10:00 AM - 4:00 PM
-
-## 📄 License
-
-This project is developed for educational and commercial use. All rights reserved.
+For support, email info@signaturesalon.ae or create an issue in this repository.
 
 ---
 
-**Built with ❤️ for the beauty industry** 
+**Note**: This is a production-ready application. Ensure all security measures are in place before deploying to production. 

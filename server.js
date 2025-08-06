@@ -4,6 +4,11 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 
+// Database imports
+const { testConnection, sequelize } = require('./config/database');
+const { testSupabaseConnection } = require('./config/supabase');
+const { initializeDatabase } = require('./models');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -25,21 +30,49 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
+// Test database connections
+testConnection();
+testSupabaseConnection();
+
+// Initialize database and models
+initializeDatabase().catch(console.error);
+
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // API routes
-app.use('/api', require('./api/calendar-integration'));
+app.use('/api/calendar', require('./api/calendar-integration'));
+app.use('/api/appointments', require('./api/appointments'));
+app.use('/api/services', require('./api/services'));
+app.use('/api/customers', require('./api/customers'));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-    res.json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
-        version: '1.0.0'
-    });
+app.get('/health', async (req, res) => {
+    try {
+        // Test database connection
+        await sequelize.authenticate();
+        
+        // Test Supabase connection
+        const supabaseConnected = await testSupabaseConnection();
+        
+        res.json({ 
+            status: 'OK', 
+            timestamp: new Date().toISOString(),
+            version: '1.0.0',
+            database: 'connected',
+            supabase: supabaseConnected ? 'connected' : 'disconnected'
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            status: 'ERROR', 
+            timestamp: new Date().toISOString(),
+            version: '1.0.0',
+            database: 'disconnected',
+            error: error.message
+        });
+    }
 });
 
 // Error handling middleware
@@ -62,6 +95,7 @@ app.listen(PORT, () => {
     console.log(`📱 Frontend available at: http://localhost:${PORT}`);
     console.log(`🔧 API available at: http://localhost:${PORT}/api`);
     console.log(`💚 Health check at: http://localhost:${PORT}/health`);
+    console.log(`☁️  Supabase Dashboard: https://app.supabase.com/project/swiwraumksfkkjxjftck`);
 });
 
 module.exports = app; 

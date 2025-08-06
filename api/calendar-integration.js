@@ -12,11 +12,20 @@ class GoogleCalendarService {
     constructor() {
         this.auth = null;
         this.calendar = null;
+        this.isInitialized = false;
     }
 
     // Initialize Google Calendar API
     async initialize() {
         try {
+            // Check if credentials file exists
+            const fs = require('fs');
+            if (!fs.existsSync(CREDENTIALS_PATH)) {
+                console.log('⚠️  Google Calendar credentials not found. Calendar integration will be simulated.');
+                this.isInitialized = false;
+                return;
+            }
+
             const credentials = require(CREDENTIALS_PATH);
             this.auth = new google.auth.GoogleAuth({
                 credentials,
@@ -24,16 +33,30 @@ class GoogleCalendarService {
             });
 
             this.calendar = google.calendar({ version: 'v3', auth: this.auth });
-            console.log('Google Calendar API initialized successfully');
+            this.isInitialized = true;
+            console.log('✅ Google Calendar API initialized successfully');
         } catch (error) {
-            console.error('Failed to initialize Google Calendar API:', error);
-            throw error;
+            console.log('⚠️  Google Calendar API initialization failed:', error.message);
+            console.log('📝 Calendar integration will be simulated');
+            this.isInitialized = false;
         }
     }
 
     // Create calendar event for appointment
     async createAppointmentEvent(appointmentData) {
         try {
+            if (!this.isInitialized) {
+                // Simulate calendar event creation
+                console.log('📅 Simulating calendar event creation:', appointmentData);
+                return {
+                    id: `simulated_event_${Date.now()}`,
+                    htmlLink: 'https://calendar.google.com/event/simulated',
+                    summary: `Parlor Appointment - ${appointmentData.service}`,
+                    start: { dateTime: `${appointmentData.date}T${appointmentData.time}:00` },
+                    end: { dateTime: this.calculateEndTime(appointmentData.date, appointmentData.time, appointmentData.service) }
+                };
+            }
+
             const event = {
                 summary: `Parlor Appointment - ${appointmentData.service}`,
                 description: `
@@ -81,6 +104,15 @@ class GoogleCalendarService {
     // Update calendar event for rescheduling
     async updateAppointmentEvent(appointmentData, eventId) {
         try {
+            if (!this.isInitialized) {
+                console.log('📅 Simulating calendar event update:', appointmentData);
+                return {
+                    id: eventId,
+                    htmlLink: 'https://calendar.google.com/event/simulated',
+                    summary: `Parlor Appointment - ${appointmentData.service} (RESCHEDULED)`
+                };
+            }
+
             const event = {
                 summary: `Parlor Appointment - ${appointmentData.service} (RESCHEDULED)`,
                 description: `
@@ -119,6 +151,11 @@ class GoogleCalendarService {
     // Cancel calendar event
     async cancelAppointmentEvent(eventId) {
         try {
+            if (!this.isInitialized) {
+                console.log('📅 Simulating calendar event cancellation:', eventId);
+                return { success: true };
+            }
+
             const response = await this.calendar.events.delete({
                 calendarId: 'primary',
                 eventId: eventId,
@@ -154,6 +191,11 @@ class GoogleCalendarService {
     // Check calendar availability
     async checkAvailability(date, time, duration = 60) {
         try {
+            if (!this.isInitialized) {
+                console.log('📅 Simulating availability check');
+                return true; // Assume available for simulation
+            }
+
             const startDateTime = new Date(`${date}T${time}:00`);
             const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
 

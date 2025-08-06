@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log('Parlor Booking App initialized');
     
+    // Load services from API
+    loadServices();
+    
     // Add service card hover effects
     const serviceCards = document.querySelectorAll('.bg-white.rounded-lg.shadow-lg');
     serviceCards.forEach(card => {
@@ -41,6 +44,41 @@ function initializeApp() {
             button.classList.add('btn-primary');
         }
     });
+}
+
+// Load services from API
+async function loadServices() {
+    try {
+        const response = await fetch('/api/services');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch services');
+        }
+        
+        const services = await response.json();
+        
+        // Populate service select
+        const serviceSelect = document.getElementById('service-select');
+        if (serviceSelect) {
+            // Clear existing options except the first one
+            serviceSelect.innerHTML = '<option value="">Choose a service...</option>';
+            
+            // Add services from API
+            services.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service.id;
+                option.textContent = `${service.name} ($${service.price})`;
+                option.setAttribute('data-price', service.price);
+                option.setAttribute('data-duration', service.duration);
+                option.setAttribute('data-category', service.category);
+                serviceSelect.appendChild(option);
+            });
+        }
+        
+    } catch (error) {
+        console.error('Error loading services:', error);
+        showToast('Failed to load services', 'error');
+    }
 }
 
 // Setup event listeners
@@ -65,6 +103,30 @@ function setupEventListeners() {
     const appointmentDate = document.getElementById('appointment-date');
     if (appointmentDate) {
         appointmentDate.addEventListener('change', handleDateSelection);
+    }
+    
+    // Scroll to services button
+    const scrollServicesBtn = document.getElementById('scroll-services-btn');
+    if (scrollServicesBtn) {
+        scrollServicesBtn.addEventListener('click', () => scrollToSection('services'));
+    }
+    
+    // Search appointments button
+    const searchAppointmentsBtn = document.getElementById('search-appointments-btn');
+    if (searchAppointmentsBtn) {
+        searchAppointmentsBtn.addEventListener('click', searchAppointments);
+    }
+    
+    // Close modal button
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
+    
+    // Test modal button
+    const testModalBtn = document.getElementById('test-modal-btn');
+    if (testModalBtn) {
+        testModalBtn.addEventListener('click', testModal);
     }
     
     // Close modal when clicking outside
@@ -102,6 +164,27 @@ function handleServiceSelection(event) {
     const selectedOption = event.target.options[event.target.selectedIndex];
     const price = selectedOption.getAttribute('data-price');
     const duration = selectedOption.getAttribute('data-duration');
+    const category = selectedOption.getAttribute('data-category');
+    
+    // Auto-fill category field
+    const categoryField = document.getElementById('service-category');
+    if (categoryField) {
+        if (category) {
+            // Convert category to display name
+            const categoryDisplayNames = {
+                'hair': 'Hair Services',
+                'makeup': 'Makeup Services',
+                'skincare': 'Skincare Services',
+                'nails': 'Nail Services',
+                'hair-removal': 'Hair Removal Services',
+                'bridal': 'Bridal Services'
+            };
+            categoryField.value = categoryDisplayNames[category] || category;
+        } else {
+            // Clear category field if no service selected
+            categoryField.value = '';
+        }
+    }
     
     if (price && duration) {
         showToast(`Selected service: ${selectedOption.text} (${duration} mins)`, 'info');
@@ -165,12 +248,8 @@ function updateAvailableTimeSlots(selectedDate) {
 
 // Check if time slot is available
 function isTimeSlotAvailable(date, time) {
-    const dateTimeString = `${date}T${time}`;
-    const existingAppointments = appointments.filter(apt => 
-        apt.date === date && apt.time === time
-    );
-    
-    return existingAppointments.length === 0;
+    // This function is no longer needed since the API handles conflict checking
+    return true;
 }
 
 // Handle booking form submission
@@ -187,16 +266,13 @@ async function handleBookingSubmission(event) {
         // Get form data
         const formData = new FormData(event.target);
         const bookingData = {
-            id: generateBookingId(),
-            service: formData.get('service-select') || document.getElementById('service-select').value,
-            date: formData.get('appointment-date') || document.getElementById('appointment-date').value,
-            time: formData.get('appointment-time') || document.getElementById('appointment-time').value,
             customerName: formData.get('customer-name') || document.getElementById('customer-name').value,
-            customerPhone: formData.get('customer-phone') || document.getElementById('customer-phone').value,
             customerEmail: formData.get('customer-email') || document.getElementById('customer-email').value,
-            specialRequests: formData.get('special-requests') || document.getElementById('special-requests').value,
-            status: 'confirmed',
-            createdAt: new Date().toISOString()
+            customerPhone: formData.get('customer-phone') || document.getElementById('customer-phone').value,
+            serviceId: formData.get('service-select') || document.getElementById('service-select').value,
+            appointmentDate: formData.get('appointment-date') || document.getElementById('appointment-date').value,
+            startTime: formData.get('appointment-time') || document.getElementById('appointment-time').value,
+            specialRequests: formData.get('special-requests') || document.getElementById('special-requests').value
         };
         
         // Validate form data
@@ -204,17 +280,21 @@ async function handleBookingSubmission(event) {
             throw new Error('Please fill in all required fields');
         }
         
-        // Check for conflicts
-        if (hasBookingConflict(bookingData)) {
-            throw new Error('This time slot is already booked. Please select another time.');
+        // Make API call to create appointment
+        const response = await fetch('/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bookingData)
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to create appointment');
         }
         
-        // Save appointment
-        appointments.push(bookingData);
-        localStorage.setItem('appointments', JSON.stringify(appointments));
-        
-        // Integrate with Google Calendar (simulated)
-        await integrateWithGoogleCalendar(bookingData);
+        const result = await response.json();
         
         // Show success message
         showSuccessModal();
@@ -227,7 +307,10 @@ async function handleBookingSubmission(event) {
             searchAppointments();
         }
         
+        console.log('Appointment created successfully:', result);
+        
     } catch (error) {
+        console.error('Booking error:', error);
         showToast(error.message, 'error');
     } finally {
         // Reset button state
@@ -238,7 +321,7 @@ async function handleBookingSubmission(event) {
 
 // Validate booking data
 function validateBookingData(data) {
-    const requiredFields = ['service', 'date', 'time', 'customerName', 'customerPhone', 'customerEmail'];
+    const requiredFields = ['customerName', 'customerEmail', 'customerPhone', 'serviceId', 'appointmentDate', 'startTime'];
     
     for (const field of requiredFields) {
         if (!data[field] || data[field].trim() === '') {
@@ -261,34 +344,21 @@ function validateBookingData(data) {
     return true;
 }
 
-// Check for booking conflicts
-function hasBookingConflict(newBooking) {
-    return appointments.some(apt => 
-        apt.date === newBooking.date && 
-        apt.time === newBooking.time &&
-        apt.status !== 'cancelled'
-    );
-}
-
 // Generate unique booking ID
 function generateBookingId() {
+    // This function is no longer needed since the API generates IDs
     return 'BK' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
 }
 
 // Integrate with Google Calendar (simulated)
 async function integrateWithGoogleCalendar(bookingData) {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // In a real implementation, this would make an API call to Google Calendar
-    console.log('Integrating with Google Calendar:', bookingData);
-    
-    // Simulate success
+    // This function is no longer needed since the API handles calendar integration
+    console.log('Calendar integration handled by API');
     return true;
 }
 
 // Search appointments by email
-function searchAppointments() {
+async function searchAppointments() {
     const email = document.getElementById('search-email').value.trim();
     
     if (!email) {
@@ -296,11 +366,27 @@ function searchAppointments() {
         return;
     }
     
-    const userAppointments = appointments.filter(apt => 
-        apt.customerEmail.toLowerCase() === email.toLowerCase()
-    );
-    
-    displayAppointments(userAppointments);
+    try {
+        // Fetch appointments from API
+        const response = await fetch('/api/appointments');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch appointments');
+        }
+        
+        const data = await response.json();
+        
+        // Filter appointments by email
+        const userAppointments = data.appointments.filter(apt => 
+            apt.customer.email.toLowerCase() === email.toLowerCase()
+        );
+        
+        displayAppointments(userAppointments);
+        
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        showToast('Failed to fetch appointments', 'error');
+    }
 }
 
 // Display appointments
@@ -319,12 +405,12 @@ function displayAppointments(appointmentsToShow) {
         return;
     }
     
-    container.innerHTML = appointmentsToShow.map(apt => `
+    container.innerHTML = appointmentsToShow.map((apt, index) => `
         <div class="appointment-card bg-white rounded-lg shadow-lg p-6 mb-4">
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h3 class="text-xl font-semibold text-gray-800">${getServiceDisplayName(apt.service)}</h3>
-                    <p class="text-gray-600">${formatDate(apt.date)} at ${formatTime(apt.time)}</p>
+                    <h3 class="text-xl font-semibold text-gray-800">${apt.service.name}</h3>
+                    <p class="text-gray-600">${formatDate(apt.appointmentDate)} at ${formatTime(apt.startTime)}</p>
                 </div>
                 <span class="status-${apt.status} px-3 py-1 rounded-full text-sm font-semibold">
                     ${apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
@@ -333,11 +419,11 @@ function displayAppointments(appointmentsToShow) {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <p class="text-sm text-gray-500">Customer</p>
-                    <p class="font-semibold">${apt.customerName}</p>
+                    <p class="font-semibold">${apt.customer.name}</p>
                 </div>
                 <div>
                     <p class="text-sm text-gray-500">Contact</p>
-                    <p class="font-semibold">${apt.customerPhone}</p>
+                    <p class="font-semibold">${apt.customer.phone}</p>
                 </div>
             </div>
             ${apt.specialRequests ? `
@@ -349,16 +435,34 @@ function displayAppointments(appointmentsToShow) {
             <div class="flex justify-between items-center">
                 <p class="text-sm text-gray-500">Booking ID: ${apt.id}</p>
                 <div class="space-x-2">
-                    <button onclick="rescheduleAppointment('${apt.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                    <button class="reschedule-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors" data-appointment-id="${apt.id}">
                         Reschedule
                     </button>
-                    <button onclick="cancelAppointment('${apt.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                    <button class="cancel-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors" data-appointment-id="${apt.id}">
                         Cancel
                     </button>
                 </div>
             </div>
         </div>
     `).join('');
+    
+    // Add event listeners to the dynamically created buttons
+    const rescheduleButtons = container.querySelectorAll('.reschedule-btn');
+    const cancelButtons = container.querySelectorAll('.cancel-btn');
+    
+    rescheduleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentId = this.getAttribute('data-appointment-id');
+            rescheduleAppointment(appointmentId);
+        });
+    });
+    
+    cancelButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentId = this.getAttribute('data-appointment-id');
+            cancelAppointment(appointmentId);
+        });
+    });
 }
 
 // Get service display name
@@ -407,30 +511,67 @@ function rescheduleAppointment(bookingId) {
 }
 
 // Cancel appointment
-function cancelAppointment(bookingId) {
+async function cancelAppointment(bookingId) {
     if (confirm('Are you sure you want to cancel this appointment?')) {
-        const appointmentIndex = appointments.findIndex(apt => apt.id === bookingId);
-        if (appointmentIndex !== -1) {
-            appointments[appointmentIndex].status = 'cancelled';
-            localStorage.setItem('appointments', JSON.stringify(appointments));
+        try {
+            const response = await fetch(`/api/appointments/${bookingId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cancelledBy: 'customer'
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to cancel appointment');
+            }
+            
             showToast('Appointment cancelled successfully', 'success');
             
             // Refresh appointments list
             searchAppointments();
+            
+        } catch (error) {
+            console.error('Error cancelling appointment:', error);
+            showToast(error.message, 'error');
         }
     }
 }
 
 // Show success modal
 function showSuccessModal() {
-    successModal.classList.remove('hidden');
-    successModal.classList.add('flex');
+    const modal = document.getElementById('success-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Add focus trap for accessibility
+        modal.setAttribute('tabindex', '-1');
+        modal.focus();
+    }
+}
+
+// Test modal functionality
+function testModal() {
+    console.log('Testing modal functionality...');
+    showSuccessModal();
+    console.log('Modal should be visible now');
 }
 
 // Close modal
 function closeModal() {
-    successModal.classList.add('hidden');
-    successModal.classList.remove('flex');
+    const modal = document.getElementById('success-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        // Remove focus trap
+        modal.removeAttribute('tabindex');
+        console.log('Modal closed');
+    } else {
+        console.error('Modal element not found');
+    }
 }
 
 // Show toast notification
@@ -465,4 +606,5 @@ window.searchAppointments = searchAppointments;
 window.rescheduleAppointment = rescheduleAppointment;
 window.cancelAppointment = cancelAppointment;
 window.closeModal = closeModal;
-window.scrollToSection = scrollToSection; 
+window.scrollToSection = scrollToSection;
+window.testModal = testModal; 
